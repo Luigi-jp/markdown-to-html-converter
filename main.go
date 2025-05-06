@@ -6,20 +6,11 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 
 	"flag"
-	"fmt"
+	"log"
 	"os"
 )
 
 func main() {
-	// args := os.Args
-
-	// if len(args) < 3 {
-	// 	fmt.Fprint(os.Stderr, "エラー: 引数を正しく指定してください。")
-	// 	os.Exit(1)
-	// }
-
-	// input, output := args[1], args[2]
-
 	input := flag.String("input", "", "入力となるMarkdownファイルパス")
 	output := flag.String("output", "", "HTMLの出力先ファイルパス")
 	flag.Parse()
@@ -31,19 +22,17 @@ func main() {
 
 	md, err := os.ReadFile(*input)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "エラー: %v", err)
-		os.Exit(1)
+		log.Fatalf("ファイルの読み込みに失敗しました。: %v", err)
 	}
 
 	html := convertMdToHtml(md)
 
 	err = os.WriteFile(*output, html, 0644)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "エラー: %v", err)
-		os.Exit(1)
+		log.Fatalf("ファイルへの書き込みに失敗しました。: %v", err)
 	}
 
-	fmt.Printf("%sをHTMLに変換して%sに出力しました。", *input, *output)
+	log.Printf("%sをHTMLに変換して%sに出力しました。", *input, *output)
 }
 
 func convertMdToHtml(md []byte) []byte {
